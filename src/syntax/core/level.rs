@@ -43,6 +43,7 @@ impl LiftEx for Val {
             Val::Cons(name, e) => Val::cons(name, e.lift(levels)),
             Val::Pair(l, r) => Val::pair(l.lift(levels), r.lift(levels)),
             Val::Neut(neut) => Val::Neut(neut.lift(levels)),
+            Val::Row(..) => unimplemented!(),
         }
     }
 
@@ -62,6 +63,7 @@ impl LiftEx for Val {
             Val::Neut(neut) => neut.calc_level(),
             Val::Pair(l, r) => Some(l.calc_level()?.max(r.calc_level()?)),
             Val::Cons(_, e) => e.calc_level(),
+            Val::Row(..) => unimplemented!(),
         }
     }
 }

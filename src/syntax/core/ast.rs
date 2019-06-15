@@ -120,6 +120,7 @@ impl RedEx for Val {
             ),
             Val::Cons(name, a) => Self::cons(name, a.reduce_with_dbi(arg, dbi)),
             Val::Type(n) => Val::Type(n),
+            Val::Row(..) => unimplemented!(),
         }
     }
 }
@@ -228,6 +229,14 @@ impl RedEx for Neutral {
 /// Type values.
 pub type TVal = Val;
 
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub enum Row {
+    Present(Variants),
+    Absent(Vec<String>),
+    Empty,
+    Combination(Box<Self>, Box<Self>),
+}
+
 /// Non-redex, canonical values.
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Val {
@@ -245,13 +254,14 @@ pub enum Val {
     /// Sigma instance.
     Pair(Box<Self>, Box<Self>),
     Neut(Neutral),
+    Row(Row),
 }
 
 impl Val {
     pub fn is_type(&self) -> bool {
         use Val::*;
         match self {
-            Type(..) | Dt(..) | Sum(..) => true,
+            Type(..) | Dt(..) | Sum(..) | Row(..) => true,
             // In case it's neutral, we use `is_universe` on its type.
             Lam(..) | Cons(..) | Pair(..) | Neut(..) => false,
         }

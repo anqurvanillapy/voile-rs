@@ -68,6 +68,7 @@ impl Display for Val {
             Val::Pair(fst, snd) => write!(f, "({}, {})", fst, snd),
             Val::Neut(neut) => neut.fmt(f),
             Val::Cons(name, a) => write!(f, "(@{} {})", name, a),
+            Val::Row(..) => unimplemented!(),
         }
     }
 }

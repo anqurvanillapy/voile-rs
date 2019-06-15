@@ -1,5 +1,6 @@
 use crate::syntax::common::*;
 use crate::syntax::level::Level;
+use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Abs {
@@ -29,6 +30,11 @@ pub enum Abs {
     Fst(SyntaxInfo, Box<Self>),
     Snd(SyntaxInfo, Box<Self>),
     Sum(SyntaxInfo, Vec<Self>),
+    /// Row polymorphism type and actions
+    Row(SyntaxInfo, BTreeMap<Ident, Self>),
+    Select(SyntaxInfo, Box<Self>, Ident),
+    Add(SyntaxInfo, Box<Self>, Ident, Box<Self>),
+    Remove(SyntaxInfo, Box<Self>, Ident),
 }
 
 impl ToSyntaxInfo for Abs {
@@ -43,7 +49,11 @@ impl ToSyntaxInfo for Abs {
             | Abs::Snd(info, _)
             | Abs::Sum(info, _)
             | Abs::Lift(info, _, _)
-            | Abs::Lam(info, _, _, _) => *info,
+            | Abs::Lam(info, _, _, _)
+            | Abs::Row(info, _)
+            | Abs::Select(info, _, _)
+            | Abs::Add(info, _, _, _)
+            | Abs::Remove(info, _, _) => *info,
             Abs::Var(ident, _, _)
             | Abs::Ref(ident, _)
             | Abs::Meta(ident)

@@ -34,6 +34,7 @@ impl Display for Abs {
                 }
                 Ok(())
             }
+            Abs::Row(..) | Abs::Select(..) | Abs::Add(..) | Abs::Remove(..) => unimplemented!(),
         }
     }
 }
